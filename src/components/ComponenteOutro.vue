@@ -1,36 +1,104 @@
 <template>
   <div class="container">
     <div class="eventos">
-      <h2>Eventos Recebidos:</h2>
-      <div v-for="(evento, index) in eventos" :key="index" class="evento" :style="{ background: evento.cor }">
-        <strong>Data do Evento:</strong> {{ evento.data }}
-        <br />
-        <strong>Categoria:</strong> {{ evento.categoria }}
-        <hr />
+      <h2>Tarefas</h2>
+      <button @click="fetchData">Ver Tarefas</button>
+      <div class="container-table">
+        <table class="table">
+          <thead>
+            <th>Tarefa</th>
+            <th>Data</th>
+            <th>Categoria</th>
+            <th>Descrição</th>
+          </thead>
+          <tbody>
+            <tr v-for="tarefa in responseData">
+              <td>{{ tarefa.nome }}</td>
+              <td>{{ tarefa.data }}</td>
+              <td class="td-cor">
+                <span class="badge" :style="{ backgroundColor: tarefa.cor }">{{
+                  tarefa.categoria
+                }}</span>
+              </td>
+              <td>
+                {{ tarefa.descricao }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  props: {
-    eventos: {
-      type: Array,
-      default: () => [],
+  data() {
+    return {
+      responseData: null,
+      dataLoaded: false,
+    };
+  },
+  methods: {
+    fetchData() {
+      axios
+        .get("http://localhost:4000/get/tarefas")
+        .then((response) => {
+          this.responseData = response.data;
+          this.dataLoaded = true;
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
     },
   },
 };
 </script>
 
 <style scoped>
+.badge {
+  color: white;
+  padding: 4px 8px;
+  text-align: center;
+  border-radius: 5px;
+}
+* {
+  scroll-behavior: smooth;
+}
+.container-table {
+  margin: 0.8em 0;
+}
+tr:nth-child(even) {
+  background-color: #bababa;
+}
+table {
+  margin: 0 auto;
+  min-width: 1280px;
+  padding: 10px;
+  border-collapse: collapse;
+}
+th {
+  text-align: center;
+  background-color: #333333;
+  color: white;
+  font-weight: 600;
+  font-size: 1.4em;
+}
+td {
+  text-align: center;
+  padding: 0.5em;
+}
+* {
+  color: black;
+}
 .container {
   display: flex;
 }
 
 .eventos {
   flex-grow: 1;
-  padding: 20px;
 }
 
 .evento {
@@ -38,5 +106,10 @@ export default {
   padding: 10px;
   border-radius: 4px;
 }
-
+.tes {
+  background-color: red;
+}
+button {
+  color: white;
+}
 </style>
